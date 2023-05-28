@@ -1,0 +1,56 @@
+git_package = Package("git")
+
+dotfiles = Git("github.com/jared-skinner/dotfiles")
+df_path = dot_files.target
+
+zsh = Package("zsh")
+fzf = Package("fzf")
+rg = Package("ripgrep")
+htop = Package("htop")
+rust = Package("rust")
+go = Package("go")
+terminal = Package("alacrity")
+npm = Package("npm")
+bat = Package("bat")
+
+packages = Group(deps = [
+  zsh,
+  fzf,
+  rg,
+  htop,
+  rust,
+  go,
+  terminal,
+  npm,
+  bat
+])
+
+copy_dots = Group(deps = [
+    Copy(
+        src = os.path.join(df_path, ".gitconfig"),
+        dest = "~/.gitconfig",
+        deps = [git_package, dotfiles]
+    ),
+    Copy(
+        src=os.path.join(df_path, "nvim"),
+        dest=os.path.join("~", ".config", "nvim"),
+        deps=[nvim, fzf, rg, dotfiles]
+    ),
+    Copy(
+        src=os.path.join(df_path, "tumx"),
+        dest=os.path.join("~", ".tmux"),
+        deps=[Package("tumx"), dotfiles]
+    ),
+    Copy(
+        src=os.path.join(df_path, "zsh"),
+        dest=os.path.join("~", ".zsh"),
+        deps=[Package("zsh"), dotfiles]
+    )
+])
+
+main_task = Main(deps=[
+  copy_dots,
+  packages
+])
+
+main_task.run()
