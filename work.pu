@@ -37,9 +37,9 @@ copy_dots = Group(name = "copy_dots", deps = [
         deps=[fzf, rg, dotfiles]
     ),
     Copy(
-        src=os.path.join(df_path, "tumx"),
+        src=os.path.join(df_path, "tmux"),
         dest=os.path.join("~", ".tmux"),
-        deps=[Package("tumx"), dotfiles]
+        deps=[Package("tmux"), dotfiles]
     ),
     Copy(
         src=os.path.join(df_path, "zsh"),
