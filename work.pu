@@ -1,7 +1,7 @@
 git_package = Package("git")
 
 dotfiles = Git("github.com/jared-skinner/dotfiles")
-df_path = dot_files.target
+df_path = dotfiles.target
 
 zsh = Package("zsh")
 fzf = Package("fzf")
