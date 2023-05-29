@@ -1,6 +1,6 @@
 # dotfiles
 
-[dotfiles image](dotfile.png)
+![dotfiles image](dotfile.png)
 
 My Dotfiles
 
