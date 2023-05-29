@@ -1,6 +1,6 @@
 git_package = Package("git")
 
-dotfiles = Git("github.com/jared-skinner/dotfiles")
+dotfiles = Git("https://github.com/jared-skinner/dotfiles.git")
 df_path = dotfiles.target
 
 zsh = Package("zsh")
@@ -9,11 +9,11 @@ rg = Package("ripgrep")
 htop = Package("htop")
 rust = Package("rust")
 go = Package("go")
-terminal = Package("alacrity")
+terminal = Package("alacritty")
 npm = Package("npm")
 bat = Package("bat")
 
-packages = Group(deps = [
+packages = Group(name = "packages", deps = [
   zsh,
   fzf,
   rg,
@@ -25,7 +25,7 @@ packages = Group(deps = [
   bat
 ])
 
-copy_dots = Group(deps = [
+copy_dots = Group(name = "copy_dots", deps = [
     Copy(
         src = os.path.join(df_path, ".gitconfig"),
         dest = "~/.gitconfig",
@@ -34,7 +34,7 @@ copy_dots = Group(deps = [
     Copy(
         src=os.path.join(df_path, "nvim"),
         dest=os.path.join("~", ".config", "nvim"),
-        deps=[nvim, fzf, rg, dotfiles]
+        deps=[fzf, rg, dotfiles]
     ),
     Copy(
         src=os.path.join(df_path, "tumx"),
@@ -44,11 +44,11 @@ copy_dots = Group(deps = [
     Copy(
         src=os.path.join(df_path, "zsh"),
         dest=os.path.join("~", ".zsh"),
-        deps=[Package("zsh"), dotfiles]
+        deps=[zsh, dotfiles]
     )
 ])
 
-main_task = Main(deps=[
+main_task = Main(name="work", deps=[
   copy_dots,
   packages
 ])
