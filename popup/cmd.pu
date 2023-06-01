@@ -1,6 +1,6 @@
 git_package = Package("git")
 
-dotfiles = Git("https://github.com/jared-skinner/dotfiles.git")
+dotfiles = Git("https://github.com/jared-skinner/dotfiles.git", target="dotfiles")
 df_path = dotfiles.target
 
 zsh = Package("zsh")
@@ -11,6 +11,28 @@ bat = Package("bat")
 node = Package("nodejs")
 npm = Package("npm")
 
+if platform in ("linux", "linux2"):
+    appimage = Group(name = "appimage", deps = [
+        Package("libfuse2"),
+    ])
+
+    neovim = Group("nvim_group", deps = [
+        fzf,
+        rg,
+        node,
+        npm,
+        appimage,
+        Bash(name="nvim_appimage", comand=f"curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage --output-dir {HOME}/.local/bin", deps=[appimage]),
+        Bash(name="nvim_change_perms", comand=f"chmod u+x {HOME}/.local/bin/nvim.appimage", deps=[appimage]),
+    ])
+else:
+    neovim = Package("neovim", deps = [
+        fzf,
+        rg,
+        node,
+        npm,
+    ])
+
 packages = Group(name = "packages", deps = [
     zsh,
     fzf,
@@ -18,43 +40,50 @@ packages = Group(name = "packages", deps = [
     htop,
     node,
     npm,
-    bat
+    bat,
+    neovim
 ])
 
-# TODO: Infer this
-ROOT_HOME = "/home/jared"
+ohmyzsh_git = Git("https://github.com/ohmyzsh/ohmyzsh.git", target="ohmyzsh")
+ohmyzsh_path = ohmyzsh_git.target
+
+ohmyzsh = Group("ohmyzsh", force=True, deps = [
+    ohmyzsh_git,
+    Copy(src = f"{ohmyzsh_path}", dest=f"{HOME}/.oh-my-zsh"),
+    Copy(src = f"{ohmyzsh_path}/templates/zshrc.zsh-template", dest=f"{HOME}/.zshrc"),
+])
 
 copy_dots = Group(name = "copy_dots", deps = [
     Copy(
         src = os.path.join(df_path, ".gitconfig"),
-        dest = "/home/jared/.gitconfig",
+        dest = f"{HOME}/.gitconfig",
         deps = [git_package, dotfiles]
     ),
     Copy(
         src=os.path.join(df_path, "nvim"),
-        dest= "/home/jared/.config/nvim",
+        dest= f"{HOME}/.config/nvim",
         deps=[fzf, rg, dotfiles]
     ),
     Copy(
-        src=os.path.join(df_path, "tmux"),
-        dest= "home/jared/.tmux",
+        src=os.path.join(df_path, ".tmux"),
+        dest= f"{HOME}/.tmux",
         deps=[Package("tmux"), dotfiles]
     ),
     Copy(
-        src = os.path.join(df_path, "zsh"),
-        dest = "home/jared/zsh",
-        deps = [zsh, dotfiles]
+        src = os.path.join(df_path, ".zsh"),
+        dest = f"{HOME}/.zsh",
+        deps = [zsh, ohmyzsh, dotfiles]
     ),
     Copy(
         src = os.path.join(df_path, ".profile"),
-        dest = "home/jared/.profile",
+        dest = f"{HOME}/.profile",
         overwrite = True
     )
 ])
 
 main_task = Main(name="work", deps=[
-  copy_dots,
-  packages
+    copy_dots,
+    packages
 ])
 
 main_task.run()
