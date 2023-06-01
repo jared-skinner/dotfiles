@@ -50,7 +50,6 @@ ohmyzsh_path = ohmyzsh_git.target
 ohmyzsh = Group("ohmyzsh", force=True, deps = [
     ohmyzsh_git,
     Copy(src = f"{ohmyzsh_path}", dest=f"{HOME}/.oh-my-zsh"),
-    Copy(src = f"{ohmyzsh_path}/templates/zshrc.zsh-template", dest=f"{HOME}/.zshrc"),
 ])
 
 copy_dots = Group(name = "copy_dots", deps = [
@@ -70,8 +69,8 @@ copy_dots = Group(name = "copy_dots", deps = [
         deps=[Package("tmux"), dotfiles]
     ),
     Copy(
-        src = os.path.join(df_path, ".zsh"),
-        dest = f"{HOME}/.zsh",
+        src = os.path.join(df_path, ".zshrc"),
+        dest = f"{HOME}/.zshrc",
         deps = [zsh, ohmyzsh, dotfiles]
     ),
     Copy(
