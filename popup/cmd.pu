@@ -1,0 +1,60 @@
+git_package = Package("git")
+
+dotfiles = Git("https://github.com/jared-skinner/dotfiles.git")
+df_path = dotfiles.target
+
+zsh = Package("zsh")
+fzf = Package("fzf")
+rg = Package("ripgrep")
+htop = Package("htop")
+bat = Package("bat")
+node = Package("nodejs")
+npm = Package("npm")
+
+packages = Group(name = "packages", deps = [
+    zsh,
+    fzf,
+    rg,
+    htop,
+    node,
+    npm,
+    bat
+])
+
+# TODO: Infer this
+ROOT_HOME = "/home/jared"
+
+copy_dots = Group(name = "copy_dots", deps = [
+    Copy(
+        src = os.path.join(df_path, ".gitconfig"),
+        dest = "/home/jared/.gitconfig",
+        deps = [git_package, dotfiles]
+    ),
+    Copy(
+        src=os.path.join(df_path, "nvim"),
+        dest= "/home/jared/.config/nvim",
+        deps=[fzf, rg, dotfiles]
+    ),
+    Copy(
+        src=os.path.join(df_path, "tmux"),
+        dest= "home/jared/.tmux",
+        deps=[Package("tmux"), dotfiles]
+    ),
+    Copy(
+        src = os.path.join(df_path, "zsh"),
+        dest = "home/jared/zsh",
+        deps = [zsh, dotfiles]
+    ),
+    Copy(
+        src = os.path.join(df_path, ".profile"),
+        dest = "home/jared/.profile",
+        overwrite = True
+    )
+])
+
+main_task = Main(name="work", deps=[
+  copy_dots,
+  packages
+])
+
+main_task.run()
