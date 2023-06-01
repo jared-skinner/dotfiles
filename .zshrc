@@ -99,3 +99,12 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# start tmux on startup
+[[ $TERM != "screen" ]] && exec tmux
+
+
+alias vim="~/.local/bin/nvim.appimage"
+alias nvim="~/.local/bin/nvim.appimage"
+
+alias python=python3

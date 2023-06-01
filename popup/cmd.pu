@@ -71,14 +71,15 @@ copy_dots = Group(name = "copy_dots", deps = [
     Copy(
         src = os.path.join(df_path, ".zshrc"),
         dest = f"{HOME}/.zshrc",
-        deps = [zsh, ohmyzsh, dotfiles]
+        force=True,
+        overwrite=True
     ),
     Copy(
         src = os.path.join(df_path, ".profile"),
         dest = f"{HOME}/.profile",
         overwrite = True
     )
-])
+], force=True)
 
 main_task = Main(name="work", deps=[
     copy_dots,
