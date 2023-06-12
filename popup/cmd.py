@@ -1,3 +1,8 @@
+from popup.tasks.main import *
+from popup.tasks.shell import *
+from popup.tasks.group import *
+HOME = os.environ['HOME']
+
 git_package = Package("git")
 
 dotfiles = Git("https://github.com/jared-skinner/dotfiles.git", target="dotfiles")
@@ -33,7 +38,7 @@ else:
         npm,
     ])
 
-packages = Group(name = "packages", deps = [
+cmd_packages = Group(name = "packages", deps = [
     zsh,
     fzf,
     rg,
@@ -81,9 +86,7 @@ copy_dots = Group(name = "copy_dots", deps = [
     )
 ], force=True)
 
-main_task = Main(name="work", deps=[
+main_task = Main(name="cmd_work", deps=[
     copy_dots,
-    packages
+    cmd_packages,
 ])
-
-main_task.run()
